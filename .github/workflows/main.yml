@@ -1,0 +1,54 @@
+name: Build Flutter App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Binaries
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    # Check out the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Flutter environment
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: flutter pub get
+
+    # Build binaries
+    - name: Build for ${{ matrix.os }}
+      run: |
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          flutter build linux --release
+        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+          flutter build windows --release
+        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+          flutter build macos --release
+        fi
+
+    # Upload artifacts
+    - name: Upload binaries
+      uses: actions/upload-artifact@v3
+      with:
+        name: flutter-app-${{ matrix.os }}
+        path: |
+          build/linux/release/bundle/**    # For Linux
+          build/windows/runner/Release/** # For Windows
+          build/macos/Build/Products/Release/** # For macOS
