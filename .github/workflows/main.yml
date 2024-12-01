@@ -18,17 +18,17 @@ jobs:
         os: [ubuntu-latest, windows-latest]  # Nur Ubuntu und Windows
 
     steps:
-    # Check out the repository
+    # Code auschecken
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Install dependencies for Linux and Windows
+    # Flutter einrichten
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.5'  # Setze die Flutter-Version auf 3.24.5
 
-    # Install Ninja and GTK for Linux (Ubuntu only)
+    # Installiere Abhängigkeiten für Linux
     - name: Install dependencies for Linux
       if: runner.os == 'Linux'
       run: |
@@ -38,18 +38,18 @@ jobs:
         sudo apt-get install -y libgtk-3-dev   # GTK+3
         flutter doctor
 
-    # Install Ninja on Windows (via Chocolatey)
+    # Installiere Ninja für Windows
     - name: Install Ninja build tool (Windows)
       if: runner.os == 'Windows'
       run: |
         choco install ninja
         flutter doctor
 
-    # Install Flutter dependencies
+    # Flutter-Abhängigkeiten installieren
     - name: Install dependencies
       run: flutter pub get
 
-    # Build binaries for each OS
+    # Baue die App für das jeweilige OS
     - name: Build for ${{ matrix.os }}
       run: |
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
@@ -58,7 +58,7 @@ jobs:
           flutter build windows --release
         fi
 
-    # Upload the build artifacts
+    # Lade die Binaries hoch
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
