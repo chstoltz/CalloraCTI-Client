@@ -22,13 +22,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Install Flutter
+    # Install dependencies for Linux (and Windows, macOS when needed)
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.24.5'  # Setze hier die gewünschte Flutter-Version
+        flutter-version: '3.3.0'
 
-    # Install dependencies
+    # Install Ninja for Linux/macOS (for Ubuntu and macOS)
+    - name: Install Ninja build tool (Linux/macOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build
+        sudo apt-get install -y build-essential  # C++ Compiler on Linux
+        flutter doctor
+
+    # Install Ninja on Windows (via Chocolatey)
+    - name: Install Ninja build tool (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        choco install ninja
+        flutter doctor
+
+    # Install Flutter dependencies
     - name: Install dependencies
       run: flutter pub get
 
