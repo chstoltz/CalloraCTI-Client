@@ -26,7 +26,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.3.0'
+        flutter-version: '3.24.5'
 
     # Install Ninja for Linux/macOS (for Ubuntu and macOS)
     - name: Install Ninja build tool (Linux/macOS)
