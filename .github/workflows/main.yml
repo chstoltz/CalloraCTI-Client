@@ -52,7 +52,14 @@ jobs:
     # Baue die App für das jeweilige OS
     - name: Build for ${{ matrix.os }}
       run: |
-        flutter build ${{ matrix.os }} --release
+        # Für Linux
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          flutter build linux --release
+        fi
+        # Für Windows
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          flutter build windows --release
+        fi
 
     # Debugging: Zeige die generierten Build-Dateien an
     - name: List build directories
