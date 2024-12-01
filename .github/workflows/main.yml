@@ -12,10 +12,9 @@ jobs:
   build:
     name: Build Binaries
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]  # Nur Ubuntu und Windows
+        os: [ubuntu-latest, windows-latest]  # Beide Plattformen parallel bauen
 
     steps:
     # Code auschecken
@@ -41,6 +40,7 @@ jobs:
     # Installiere Ninja für Windows
     - name: Install Ninja build tool (Windows)
       if: runner.os == 'Windows'
+      shell: pwsh
       run: |
         choco install ninja
         flutter doctor
@@ -52,11 +52,13 @@ jobs:
     # Baue die App für das jeweilige OS
     - name: Build for ${{ matrix.os }}
       run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          flutter build linux --release
-        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          flutter build windows --release
-        fi
+        flutter build ${{ matrix.os }} --release
+
+    # Debugging: Zeige die generierten Build-Dateien an
+    - name: List build directories
+      run: |
+        echo "Listing directories in the build folder:"
+        ls -R build/
 
     # Lade die Binaries hoch
     - name: Upload binaries
