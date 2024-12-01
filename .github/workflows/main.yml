@@ -9,27 +9,19 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build Binaries
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]  # Beide Betriebssysteme werden in einer Matrix ausgeführt
-
+  build-linux:
+    name: Build for Linux
+    runs-on: ubuntu-latest  # Linux-Job auf Ubuntu
     steps:
-    # Code auschecken
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Flutter einrichten
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.5'  # Setze die Flutter-Version auf 3.24.5
 
-    # Installiere Abhängigkeiten für Linux
     - name: Install dependencies for Linux
-      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y ninja-build
@@ -37,39 +29,54 @@ jobs:
         sudo apt-get install -y libgtk-3-dev   # GTK+3
         flutter doctor
 
-    # Installiere Ninja für Windows
-    - name: Install Ninja build tool (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        choco install ninja
-        flutter doctor
-
-    # Flutter-Abhängigkeiten installieren
     - name: Install dependencies
       run: flutter pub get
 
-    # Baue die App für Linux
     - name: Build for Linux
-      if: runner.os == 'Linux'
       run: flutter build linux --release
 
-    # Baue die App für Windows
-    - name: Build for Windows
-      if: runner.os == 'Windows'
-      run: flutter build windows --release
-
-    # Debugging: Zeige die generierten Build-Dateien an
     - name: List build directories
       run: |
         echo "Listing directories in the build folder:"
         ls -R build/
 
-    # Lade die Binaries hoch
-    - name: Upload binaries
+    - name: Upload binaries for Linux
       uses: actions/upload-artifact@v3
       with:
-        name: flutter-app-${{ matrix.os }}
-        path: |
-          build/linux/release/bundle/**    # Für Linux
-          build/windows/runner/Release/** # Für Windows
+        name: flutter-app-linux
+        path: build/linux/release/bundle/**  # Für Linux
+
+  build-windows:
+    name: Build for Windows
+    runs-on: windows-latest  # Windows-Job auf Windows
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.5'  # Setze die Flutter-Version auf 3.24.5
+
+    - name: Install Ninja build tool (Windows)
+      shell: pwsh
+      run: |
+        choco install ninja
+        flutter doctor
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Build for Windows
+      run: flutter build windows --release
+
+    - name: List build directories
+      run: |
+        echo "Listing directories in the build folder:"
+        dir build
+
+    - name: Upload binaries for Windows
+      uses: actions/upload-artifact@v3
+      with:
+        name: flutter-app-windows
+        path: build/windows/runner/Release/**  # Für Windows
