@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
     # Check out the repository
@@ -30,7 +30,7 @@ jobs:
 
     # Install Ninja for Linux/macOS (for Ubuntu and macOS)
     - name: Install Ninja build tool (Linux/macOS)
-      if: runner.os == 'Linux' || runner.os == 'macOS'
+      if: runner.os == 'Linux' 
       run: |
         sudo apt-get update
         sudo apt-get install -y ninja-build
@@ -55,8 +55,6 @@ jobs:
           flutter build linux --release
         elif [ "${{ matrix.os }}" == "windows-latest" ]; then
           flutter build windows --release
-        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-          flutter build macos --release
         fi
 
     # Upload the build artifacts
@@ -67,4 +65,3 @@ jobs:
         path: |
           build/linux/release/bundle/**    # For Linux
           build/windows/runner/Release/** # For Windows
-          build/macos/Build/Products/Release/** # For macOS
