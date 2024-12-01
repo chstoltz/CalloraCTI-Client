@@ -70,11 +70,6 @@ jobs:
     - name: Build for Windows
       run: flutter build windows --release
 
-    - name: List build directories
-      run: |
-        echo "Listing directories in the build folder:"
-        dir /s /b build
-
     - name: Upload binaries for Windows
       uses: actions/upload-artifact@v3
       with:
