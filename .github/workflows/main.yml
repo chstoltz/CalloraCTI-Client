@@ -22,11 +22,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Set up Flutter environment
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: 'stable'
+    # Install Flutter manually
+    - name: Set up Flutter manually
+      run: |
+        git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
+        echo "$HOME/flutter/bin" >> $GITHUB_PATH
+        flutter --version
 
     # Install dependencies
     - name: Install dependencies
