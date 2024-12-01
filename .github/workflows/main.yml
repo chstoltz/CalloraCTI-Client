@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: flutter-app-linux
-        path: build/linux/release/bundle/**  # Für Linux
+        path: build/linux/x64/release/bundle/**  # Für Linux
 
   build-windows:
     name: Build for Windows
@@ -73,10 +73,10 @@ jobs:
     - name: List build directories
       run: |
         echo "Listing directories in the build folder:"
-        dir build
+        dir /s /b build
 
     - name: Upload binaries for Windows
       uses: actions/upload-artifact@v3
       with:
         name: flutter-app-windows
-        path: build/windows/runner/Release/**  # Für Windows
+        path: build/windows/x64/runner/Release/**  # Für Windows
