@@ -1,0 +1,27 @@
+name: tcp_button_app
+description: Desktop CTI Client für CalloraCTI
+
+publish_to: 'none' # Verhindert das Veröffentlichen im Flutter-Paket-Repository (optional)
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"  # Stelle sicher, dass du die richtige Flutter SDK-Version verwendest
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.2
+  shared_preferences: ^2.0.15
+  window_manager: ^0.2.5
+  flutter_localizations:
+    sdk: flutter
+  
+  # Weitere Abhängigkeiten, die du verwenden möchtest, hier hinzufügen.
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
