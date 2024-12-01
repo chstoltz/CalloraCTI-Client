@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]  # Beide Plattformen parallel bauen
+        os: [ubuntu-latest, windows-latest]  # Beide Betriebssysteme werden in einer Matrix ausgeführt
 
     steps:
     # Code auschecken
@@ -49,17 +49,15 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
 
-    # Baue die App für das jeweilige OS
-    - name: Build for ${{ matrix.os }}
-      run: |
-        # Für Linux
-        if [ "${{ runner.os }}" == "Linux" ]; then
-          flutter build linux --release
-        fi
-        # Für Windows
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          flutter build windows --release
-        fi
+    # Baue die App für Linux
+    - name: Build for Linux
+      if: runner.os == 'Linux'
+      run: flutter build linux --release
+
+    # Baue die App für Windows
+    - name: Build for Windows
+      if: runner.os == 'Windows'
+      run: flutter build windows --release
 
     # Debugging: Zeige die generierten Build-Dateien an
     - name: List build directories
