@@ -1,0 +1,17 @@
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/flutter_application_2
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/lib/libscreen_retriever_plugin.so
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/lib/libwindow_manager_plugin.so
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/version.json
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/packages/window_manager/images/ic_chrome_close.png
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/packages/window_manager/images/ic_chrome_minimize.png
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/packages/window_manager/images/ic_chrome_maximize.png
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/packages/window_manager/images/ic_chrome_unmaximize.png
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin

@@ -1,0 +1,1 @@
+ /home/christoph/Nextcloud/Projekte/CalloraCTI-Client/flutter_application_2/.dart_tool/flutter_build/9ca915ba2f329b90139b4287828e4fb8/native_assets.yaml: 
