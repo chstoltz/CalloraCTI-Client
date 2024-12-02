@@ -1,7 +1,7 @@
 name: tcp_button_app
 description: Desktop CTI Client für CalloraCTI
 
-publish_to: 'none' # Verhindert das Veröffentlichen im Flutter-Paket-Repository (optional)
+publish_to: 'none' # Verhindert das Veröffentlichen im Flutter-Paket-Repository (optional) 
 
 version: 1.0.0+1
 
