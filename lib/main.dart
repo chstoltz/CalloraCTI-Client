@@ -66,18 +66,23 @@ class _HomePageState extends State<HomePage> with WindowListener {
 
   late TcpServer server;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadSavedSettings();
+ @override
+void initState() {
+  super.initState();
+  _loadSavedSettings();
 
-    windowManager.addListener(this);
+  windowManager.addListener(this);
 
-    server = TcpServer(22222);
-    server.start([
-      (String action, String value) => handleFirstButton(action, value),
-    ]);
-  }
+  // Server initialisieren
+  server = TcpServer(22222);
+  server.start(); // Startet den Server ohne Argumente
+
+  // Hinzufügen des Handlers für den "first"-Button
+  server.addHandler('first', (String action, String value) {
+    handleFirstButton(action, value);
+  });
+}
+
 
   void _loadSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -104,14 +109,14 @@ class _HomePageState extends State<HomePage> with WindowListener {
   }
 
   void handleDynamicButton(int index, String action, String value) {
-    setState(() {
-      if (action == 'color') {
-        dynamicButtons[index]['color'] = _getColorFromString(value);
-      } else if (action == 'number') {
-        dynamicButtons[index]['label'] = value;
-      }
-    });
-  }
+  setState(() {
+    if (action == 'color') {
+      dynamicButtons[index]['color'] = _getColorFromString(value);
+    } else if (action == 'number') {
+      dynamicButtons[index]['label'] = value;
+    }
+  });
+}
 
   Color _getColorFromString(String color) {
     switch (color.toLowerCase()) {
@@ -127,41 +132,54 @@ class _HomePageState extends State<HomePage> with WindowListener {
   }
 
   Future<void> _fetchDynamicButtons() async {
-    if (apiUrl.isEmpty || ownExtension.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bitte API-URL und Nebenstelle eingeben!')),
-      );
-      return;
-    }
-
-    try {
-      final response = await http.get(Uri.parse('$apiUrl?nst=$ownExtension'));
-      if (response.statusCode == 200) {
-        List<dynamic> responseData = jsonDecode(response.body);
-        setState(() {
-          dynamicButtons = responseData.map((data) {
-            return {
-              'ziel': data['ziel'],
-              'label': data['label'],
-              'color': Colors.green,
-            };
-          }).toList();
-        });
-
-        server.addHandlers(dynamicButtons.map((button) {
-          int index = dynamicButtons.indexOf(button);
-          return (String action, String value) =>
-              handleDynamicButton(index, action, value);
-        }).toList());
-      } else {
-        throw Exception("API Fehler: ${response.statusCode}");
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler beim Abrufen der Buttons: $e')),
-      );
-    }
+  if (apiUrl.isEmpty || ownExtension.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Bitte API-URL und Nebenstelle eingeben!')),
+    );
+    return;
   }
+
+  try {
+    final response = await http.get(Uri.parse('$apiUrl?nst=$ownExtension'));
+    if (response.statusCode == 200) {
+      // Vor dem Aktualisieren der dynamischen Buttons alte Handler entfernen
+      dynamicButtons.forEach((button) {
+        server.removeHandler(button['ziel'].toString());
+      });
+
+      // Aktualisieren der Buttons basierend auf der API-Antwort
+      List<dynamic> responseData = jsonDecode(response.body);
+      setState(() {
+        dynamicButtons = responseData.map((data) {
+          return {
+            'ziel': data['ziel'], // Buttonnummer (z.B. 620)
+            'label': data['label'],
+            'color': Colors.green,
+          };
+        }).toList();
+      });
+
+      // Hinzufügen der neuen TCP-Handler
+      for (var button in dynamicButtons) {
+        String buttonNumber = button['ziel'].toString();
+        server.addHandler(buttonNumber, (String action, String value) {
+          int index = dynamicButtons.indexWhere((btn) => btn['ziel'] == buttonNumber);
+          if (index != -1) {
+            handleDynamicButton(index, action, value);
+          }
+        });
+      }
+    } else {
+      throw Exception("API Fehler: ${response.statusCode}");
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Fehler beim Abrufen der Buttons: $e')),
+    );
+  }
+}
+
+
 
   void _saveSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -274,6 +292,16 @@ class _HomePageState extends State<HomePage> with WindowListener {
                   ),
                 ),
               ),
+              // Horizontale Linie
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Divider(
+                color: Colors.grey, // Farbe der Linie
+                thickness: 1,       // Dicke der Linie
+                indent: 20,         // Einzug links
+                endIndent: 20,      // Einzug rechts
+              ),
+            ),
               ...dynamicButtons.asMap().entries.map((entry) {
                 int index = entry.key;
                 Map<String, dynamic> button = entry.value;
@@ -335,12 +363,11 @@ class _HomePageState extends State<HomePage> with WindowListener {
 class TcpServer {
   final int port;
   late ServerSocket _serverSocket;
-  List<void Function(String, String)> _buttonHandlers = [];
+  Map<String, void Function(String, String)> _buttonHandlers = {};
 
   TcpServer(this.port);
 
-  Future<void> start(List<void Function(String, String)> initialHandlers) async {
-    _buttonHandlers = initialHandlers;
+  Future<void> start() async {
     try {
       _serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
       print('Server läuft auf Port $port');
@@ -357,13 +384,11 @@ class TcpServer {
             String action = parts[1];
             String value = parts[2];
 
-            if (command == 'first') {
-              _buttonHandlers[0](action, value);
+            // Handler aufrufen, wenn vorhanden
+            if (_buttonHandlers.containsKey(command)) {
+              _buttonHandlers[command]!(action, value);
             } else {
-              int index = int.tryParse(command) ?? -1;
-              if (index >= 0 && index < _buttonHandlers.length) {
-                _buttonHandlers[index](action, value);
-              }
+              print('Kein Handler für $command gefunden');
             }
           }
         }, onError: (error) {
@@ -378,8 +403,12 @@ class TcpServer {
     }
   }
 
-  void addHandlers(List<void Function(String, String)> newHandlers) {
-    _buttonHandlers.addAll(newHandlers);
+  void addHandler(String buttonNumber, void Function(String, String) handler) {
+    _buttonHandlers[buttonNumber] = handler;
+  }
+
+  void removeHandler(String buttonNumber) {
+    _buttonHandlers.remove(buttonNumber);
   }
 
   void stop() {
