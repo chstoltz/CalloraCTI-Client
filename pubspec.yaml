@@ -14,6 +14,7 @@ dependencies:
   http: ^1.2.2
   shared_preferences: ^2.0.15
   window_manager: ^0.2.5
+  flutter_launcher_icons: ^0.14.1
   flutter_localizations:
     sdk: flutter
   
@@ -25,3 +26,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_icons:
+  icon_windows:
+    windows: true
+    image_path: "assets/icon/callora.ico"
+  icon_linux:
+    linux: true
+    image_path: "assets/icon/callora.png"

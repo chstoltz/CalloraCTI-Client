@@ -54,7 +54,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WindowListener {
-  String firstButtonLabel = "Leitung 1";
+  String firstButtonLabel = "L1";
   Color firstButtonColor = Colors.green;
 
   List<Map<String, dynamic>> dynamicButtons = [];
@@ -82,7 +82,32 @@ void initState() {
     handleFirstButton(action, value);
   });
 }
+Future<void> _sendHttpRequest(String action) async {
+    if (apiUrl.isEmpty || ownExtension.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bitte API-URL und Nebenstelle eingeben!')),
+      );
+      return;
+    }
 
+    final url = Uri.parse('$apiUrl?action=$action&nst=$ownExtension');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erfolg: $action')), // Erfolgsmeldung
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Fehler: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Netzwerkfehler: $e')),
+      );
+    }
+  }
 
   void _loadSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -284,7 +309,9 @@ void initState() {
                       backgroundColor: firstButtonColor,
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      _sendHttpRequest('first'); // HTTP-Anfrage für 'first'
+                    },
                     child: Text(
                       firstButtonLabel,
                       style: const TextStyle(fontSize: 20),
@@ -314,7 +341,9 @@ void initState() {
                         backgroundColor: button['color'],
                         padding: const EdgeInsets.symmetric(vertical: 15),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _sendHttpRequest(button['ziel'].toString()); // HTTP für dynamischen Button
+                      },
                       child: Text(
                         button['label'],
                         style: const TextStyle(fontSize: 20),
