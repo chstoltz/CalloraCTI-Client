@@ -27,10 +27,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-flutter_icons:
-  icon_windows:
-    windows: true
-    image_path: "assets/icon/callora.ico"
-  icon_linux:
-    linux: true
+flutter_launcher_icons:
+  windows:
+    generate: true
+    image_path: "assets/icon/callora.png"
+  macos:
+    generate: true
     image_path: "assets/icon/callora.png"
